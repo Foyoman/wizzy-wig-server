@@ -42,3 +42,23 @@ def getNotes(request):
     notes = user.file_set.all()
     serializer = FileSerializer(notes, many=True)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def updateNote(request, note_id):
+    user = request.user 
+    try: 
+        note = user.file_set.get(id=note_id)
+    except File.DoesNotExist:
+        return Response({"detail": "Note not found."}, status = 404)
+    
+    if request.method == 'POST':
+        serializer = FileSerializer(note, data=request.data, partial=True)
+        # print('hello')
+        # print(request.data)
+        if serializer.is_valid():
+            serializer.save() # This will update the note.
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
+    return Response({"detail": "Invalid method."}, status=405)
