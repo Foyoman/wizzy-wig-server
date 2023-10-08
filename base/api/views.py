@@ -55,8 +55,6 @@ def updateNote(request, note_id):
     
     if request.method == 'POST':
         serializer = FileSerializer(note, data=request.data, partial=True)
-        # print('hello')
-        # print(request.data)
         if serializer.is_valid():
             serializer.save() # This will update the note.
             return Response(serializer.data, status=200)
