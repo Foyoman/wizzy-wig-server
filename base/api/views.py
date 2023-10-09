@@ -37,7 +37,7 @@ def getRoutes(request):
     return Response(routes)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def filesHandler(request):
     user = request.user
@@ -57,7 +57,7 @@ def filesHandler(request):
         return Response(serializer.errors, status=400)
     
 
-@api_view(['GET', 'PUT'])
+@api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def fileDetailHandler(request, file_id):
     user = request.user
