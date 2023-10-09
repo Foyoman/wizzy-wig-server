@@ -8,9 +8,9 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path('', views.getRoutes),
-    path('files/', views.getNotes),
-    path('files/<int:note_id>/', views.updateNote, name="update-file"),
+    path('files/', views.filesHandler, name="files-handler"),
+    path('files/<int:file_id>/', views.fileDetailHandler, name="file-detail-handler"),
     
-    path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/', MyTokenObtainPairView.as_view(), name='token-obtain-pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
 ]
