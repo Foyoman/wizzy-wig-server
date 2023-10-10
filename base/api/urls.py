@@ -7,10 +7,13 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
-    path('', views.getRoutes),
-    path('files/', views.filesHandler, name="files-handler"),
-    path('files/<int:file_id>/', views.fileDetailHandler, name="file-detail-handler"),
-    
+    path('users/', views.create_user, name='create-user'),
+
+    path('', views.get_routes),
+    path('files/', views.files_handler, name="files-handler"),
+    path('files/<int:file_id>/', views.file_detail_handler,
+         name="file-detail-handler"),
+
     path('token/', MyTokenObtainPairView.as_view(), name='token-obtain-pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
 ]
