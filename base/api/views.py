@@ -13,6 +13,9 @@ from base.models import File
 
 from django.views.decorators.csrf import csrf_exempt
 
+from django.conf import settings
+import os
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -40,6 +43,13 @@ def create_user(request):
         # create the user 
         user = serializer.save()
         
+        # create the welcoming file instance for the user
+        welcome_path = os.path.join(settings.BASE_DIR, 'base', 'static', 'welcome.md')
+        with open(welcome_path, 'r') as file:
+            welcome_content = file.read()
+        welcome_file = File(user=user, title='Welcome', content=welcome_content)
+        welcome_file.save()
+        
         # generate jwt tokens for the user
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
@@ -52,7 +62,7 @@ def create_user(request):
             'email': user.email,
             'username': user.username
         }, status=status.HTTP_201_CREATED)
-        
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
