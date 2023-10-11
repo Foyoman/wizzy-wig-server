@@ -38,10 +38,10 @@ class MyTokenObtainPairView(TokenObtainPairView):
 @permission_classes([AllowAny])
 @csrf_exempt
 def create_user(request):
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
+    user_serializer = UserSerializer(data=request.data)
+    if user_serializer.is_valid():
         # create the user 
-        user = serializer.save()
+        user = user_serializer.save()
         
         # create the welcoming file instance for the user
         welcome_path = os.path.join(settings.BASE_DIR, 'base', 'static', 'welcome.md')
@@ -49,6 +49,7 @@ def create_user(request):
             welcome_content = file.read()
         welcome_file = File(user=user, title='Welcome', content=welcome_content)
         welcome_file.save()
+        welcome_serializer = FileSerializer(welcome_file)
         
         # generate jwt tokens for the user
         refresh = RefreshToken.for_user(user)
@@ -58,12 +59,11 @@ def create_user(request):
         return Response({
             'access': access_token,
             'refresh': refresh_token,
-            'user_id': user.id,
-            'email': user.email,
-            'username': user.username
+            'user': user_serializer.data,
+            'welcome': welcome_serializer.data
         }, status=status.HTTP_201_CREATED)
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
